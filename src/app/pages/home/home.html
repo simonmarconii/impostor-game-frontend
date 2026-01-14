@@ -1,0 +1,13 @@
+<div class="flex flex-col items-center">
+    <div>
+        <p class="">{{userService.username()}}</p>
+    </div>
+    <div>
+        <div class="">
+            <button class="" (click)="serverService.createRoom()">Create a room</button>
+        </div>
+        <div class="">
+            <a [routerLink]="['change-username']">Change your name</a>
+        </div>
+    </div>
+</div>

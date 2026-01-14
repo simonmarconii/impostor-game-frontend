@@ -1,0 +1,6 @@
+<a [routerLink]="['/']">Volver</a>
+<form (ngSubmit)="changeName(nombre.value)" #form="ngForm">
+    <label>Write your new name</label>
+    <input class="border rounded-md" type="text" id="nombre" name="nombre" #nombre required maxlength="20" ngModel>
+    <button [disabled]="form.invalid">Change</button>
+</form>
