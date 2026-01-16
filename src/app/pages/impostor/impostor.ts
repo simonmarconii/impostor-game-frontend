@@ -1,15 +1,21 @@
-import { Component, inject, input, signal } from '@angular/core';
-import { Room, Server } from '../../service/server';
-import { CommonModule } from '@angular/common';
+import { Component, inject, input } from '@angular/core';
+import { Server } from '../../service/server';
+import { CommonModule, Location } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { PopUp } from '../../components/pop-up/pop-up';
+import { MatIconModule } from "@angular/material/icon";
+import { RouterModule } from '@angular/router';
 
 export type Player = {
   username: string;
+  img: string;
   impostor: boolean;
 }
 
 @Component({
   selector: 'app-impostor',
-  imports: [CommonModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, PopUp, MatIconModule, RouterModule],
   templateUrl: './impostor.html',
   styleUrl: './impostor.css',
 })
@@ -17,6 +23,13 @@ export class Impostor {
   id = input<string>();
   serverService = inject(Server);
   room = this.serverService.roomUpdate;
+  url: string = '';
+  isPopUpOpen = this.room().popUp;
+  isClose: boolean = false;
+
+  constructor(location: Location) {
+    this.url = location.path();
+  }
 
   ngOnInit() {
     this.serverService.joinRoom(this.id()!);
@@ -36,6 +49,13 @@ export class Impostor {
     )
   }
 
+  canCloseRoom() {
+    return (
+      this.serverService.userService.username() === this.room().players[0]?.username && 
+      this.room().state === 'waiting'
+    )
+  }
+
   isInGame() {
     return (
       this.room().state === 'in-game'
@@ -43,11 +63,17 @@ export class Impostor {
   }
 
   startGame() {
+    this.openPopUp();
     this.serverService.startGame(this.id()!);
   }
 
   stopGame() {
+    this.closePopUp();
     this.serverService.stopGame(this.id()!);
+  }
+
+  closeRoom() {
+    this.serverService.closeRoom(this.id()!);
   }
 
   impostor() {
@@ -55,5 +81,29 @@ export class Impostor {
       player.username === this.serverService.userService.username() &&
       player.impostor === true
     );
+  }
+
+  openPopUp() {
+    this.isPopUpOpen = true;
+  }
+
+  closePopUp() {
+    this.isPopUpOpen = false;
+  }
+
+  titleChange(): string {
+    if(this.impostor()) {
+      return "Impostor";
+    }else{
+      return this.room().footballer!;
+    }
+  }
+
+  titleStyle(): string {
+    if(this.impostor()) {
+      return "text-red-500 text-5xl";
+    }else {
+      return 'text-3xl';
+    }
   }
 }

@@ -1,34 +1,69 @@
-<div>
-    <div class="flex flex-col gap-2">
-        <p>Invite link:</p>
+<div *ngIf="!room().isClose ; else other" class="space-y-10">
+    <div>
+        <div class="flex">
+            <p>Invite link:</p>
+        </div>
     </div>
-</div>
-<div *ngIf="room()">
-    <div class="grid grid-cols-2 gap-4 m-10">
-        <div class="border rounded-sm" *ngFor="let player of room().players">
-            <div class="flex justify-center">
-                {{player.username}}
+    <div class="flex flex-col items-center gap-4">
+        <div>
+            <h2 class="text-3xl">Change mode</h2>
+        </div>
+        <div>
+            <div class="grid grid-cols-3 gap-4">
+                <button mat-flat-button color="primary">Footballers</button>
+                <button mat-flat-button color="primary">Streamers</button>
+                <button mat-flat-button color="primary">Football badge</button>
             </div>
         </div>
     </div>
-</div>
-<p>{{room().state}}</p>
-<div class="flex justify-center gap-4 m-10">
-    <div class="">
-        <button class="border rounded-sm cursor-pointer p-3" (click)="startGame()" [disabled]="!canStartGame()">Start Game</button>
-    </div>
-    <div class="">
-        <button class="border rounded-sm cursor-pointer p-3" (click)="stopGame()" [disabled]="!canStopGame()">Stop Game</button>
-    </div>
-</div>
-<div *ngIf="isInGame()">
-    <p>Esta en juego</p>
-    <div *ngIf="impostor() ; else other">
-        <p>Sos impostor</p>
-    </div>
-    <ng-template #other>
-        <div class="">
-            <p>{{room().footballer}}</p>
+    <div *ngIf="room()">
+        <div class="grid grid-cols-2 gap-4 my-10">
+            <div class="border rounded-sm" *ngFor="let player of room().players">
+                <mat-card class="flex justify-center" appearance="outlined">
+                    <mat-card-header class="flex justify-center">
+                        <mat-card-title>
+                            {{player.username}}
+                        </mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <img
+                            src="https://api.dicebear.com/9.x/pixel-art/svg?seed={{player.img}}"
+                            alt="avatar"
+                        />
+                    </mat-card-content>
+                </mat-card>
+            </div>
         </div>
-    </ng-template>
+    </div>
+    <div class="flex justify-center gap-4 my-10">
+        <div class="">
+            <button mat-flat-button color="primary" class="border rounded-sm cursor-pointer p-3" (click)="startGame()" [disabled]="!canStartGame()">Start Game</button>
+        </div>
+        <div class="">
+            <button mat-flat-button color="primary" class="border rounded-sm cursor-pointer p-3" (click)="closeRoom()" [disabled]="!canCloseRoom()">Close Room</button>
+        </div>
+    </div>
+    <app-pop-up [isOpen]="room().popUp" [title]="titleChange()" [titleStyle]="titleStyle()" (closePopUp)="closePopUp()">
+        <div class="flex flex-col gap-4">
+            <div class="flex gap-1 items-center">
+                <p class="text-lg">Starts:</p>
+                <p class="text-lg underline">{{room().startPlayer}}</p>
+            </div>
+            <div class="flex justify-center">
+                <button mat-flat-button color="primary" class="border rounded-sm cursor-pointer p-3" (click)="stopGame()" [disabled]="!canStopGame()">Stop Game</button>
+            </div>
+        </div>
+    </app-pop-up>
 </div>
+<ng-template #other>
+    <div class="flex flex-col gap-10">
+        <div>
+            <button class="cursor-pointer" mat-icon-button [routerLink]="['/']">
+                <mat-icon fontIcon="arrow_back"></mat-icon>
+            </button>
+        </div>
+        <div>
+            <h1 class="text-red-500 text-3xl">The room has been closed</h1>
+        </div>
+    </div>
+</ng-template>

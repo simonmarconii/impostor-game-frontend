@@ -9,6 +9,9 @@ export type Room = {
   players: Player[];
   state: 'waiting' | 'in-game' | 'ended';
   footballer: string | null;
+  popUp: boolean;
+  isClose: boolean;
+  startPlayer: string | null;
 }
 
 @Injectable({
@@ -18,7 +21,15 @@ export class Server {
   server = io("localhost:3000", {autoConnect: false});
   userService = inject(User);
   router = inject(Router);
-  roomUpdate = signal<Room>({id: '', players: [], state: 'waiting', footballer: null})
+  roomUpdate = signal<Room>({
+    id: '', 
+    players: [], 
+    state: 'waiting', 
+    footballer: null, 
+    popUp: false, 
+    isClose: false, 
+    startPlayer: null,
+  })
 
   constructor(private zone: NgZone) {
     this.server.on('connect', () => {
@@ -34,13 +45,22 @@ export class Server {
   }
 
   createRoom() {    
-    this.server.emitWithAck("create-room", this.userService.username()).then(res => {
+    this.server.emitWithAck("create-room", 
+      {
+        username: this.userService.username(), 
+        img: this.userService.img()
+      }).then(res => {
       this.router.navigate(['impostor', res.room.id]);
     });
   }
 
   joinRoom(id: string) {
-    this.server.emitWithAck("join-room", this.userService.username(), id);
+    this.server.emitWithAck("join-room", 
+      {
+        username: this.userService.username(),
+        img: this.userService.img(),
+        id: id
+      });
   }
 
   startGame(id: string) {
@@ -49,5 +69,9 @@ export class Server {
 
   stopGame(id: string) {
     this.server.emitWithAck("stop-game", id);
+  }
+
+  closeRoom(id: string) {
+    this.server.emitWithAck("close-room", id);
   }
 }
