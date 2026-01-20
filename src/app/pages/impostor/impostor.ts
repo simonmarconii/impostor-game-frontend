@@ -1,11 +1,12 @@
 import { Component, inject, input } from '@angular/core';
 import { Server } from '../../service/server';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { PopUp } from '../../components/pop-up/pop-up';
 import { MatIconModule } from "@angular/material/icon";
 import { RouterModule } from '@angular/router';
+import { Background } from "../../components/background/background";
 
 export type Player = {
   username: string;
@@ -15,7 +16,7 @@ export type Player = {
 
 @Component({
   selector: 'app-impostor',
-  imports: [CommonModule, MatCardModule, MatButtonModule, PopUp, MatIconModule, RouterModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, PopUp, MatIconModule, RouterModule, Background],
   templateUrl: './impostor.html',
   styleUrl: './impostor.css',
 })
@@ -24,11 +25,13 @@ export class Impostor {
   serverService = inject(Server);
   room = this.serverService.roomUpdate;
   url: string = '';
+  shortUrl: string = '';
   isPopUpOpen = this.room().popUp;
   isClose: boolean = false;
 
-  constructor(location: Location) {
-    this.url = location.path();
+  constructor() {
+    this.url = window.location.href;
+    this.shortUrl = this.url.slice(0, 35) + '...';
   }
 
   ngOnInit() {
@@ -76,6 +79,14 @@ export class Impostor {
     this.serverService.closeRoom(this.id()!);
   }
 
+  disconnect() {
+    if(this.serverService.userService.username() === this.room().players[0]?.username) {
+      this.closeRoom();
+    }else {
+      this.serverService.disconnect(this.id()!);
+    }
+  }
+
   impostor() {
     return this.room().players.some(player =>
       player.username === this.serverService.userService.username() &&
@@ -105,5 +116,9 @@ export class Impostor {
     }else {
       return 'text-3xl';
     }
+  }
+
+  copyUrl() {
+    navigator.clipboard.writeText(this.url);
   }
 }

@@ -74,4 +74,11 @@ export class Server {
   closeRoom(id: string) {
     this.server.emitWithAck("close-room", id);
   }
+
+  disconnect(id: string) {
+    this.server.emitWithAck("disconnect-player", {
+      username: this.userService.username(),
+      id: id,
+    });
+  }
 }

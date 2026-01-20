@@ -7,10 +7,11 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CommonModule } from '@angular/common';
+import { Background } from "../../components/background/background";
 
 @Component({
   selector: 'app-change-username',
-  imports: [RouterModule, FormsModule, MatAnchor, MatInputModule, MatIconModule, MatIconButton, MatButtonToggleModule, CommonModule],
+  imports: [RouterModule, FormsModule, MatAnchor, MatInputModule, MatIconModule, MatButtonToggleModule, CommonModule, Background],
   templateUrl: './change-username.html',
   styleUrl: './change-username.css',
 })

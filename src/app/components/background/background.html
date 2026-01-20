@@ -1,0 +1,10 @@
+<div class="p-20 flex flex-col gap-10 h-full">
+    <div>
+        <button class="cursor-pointer" mat-icon-button [routerLink]="[url]" (click)="disconnect()">
+            <mat-icon fontIcon="arrow_back"></mat-icon>
+        </button>
+    </div>
+    <div class="flex justify-center items-center">
+        <ng-content></ng-content>
+    </div>
+</div>

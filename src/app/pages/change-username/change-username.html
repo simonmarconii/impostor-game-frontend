@@ -1,9 +1,4 @@
-<div class="flex flex-col gap-10">
-    <div>
-        <button class="cursor-pointer" mat-icon-button [routerLink]="['/']">
-            <mat-icon fontIcon="arrow_back"></mat-icon>
-        </button>
-    </div>
+<app-background>
     <form class="flex flex-col gap-4 items-center" (ngSubmit)="changeName(nombre.value, selectedAvatar)" #form="ngForm">
         <mat-form-field>
             <mat-label>New name</mat-label>
@@ -14,7 +9,7 @@
                 <div 
                 *ngFor="let avatar of avatars" 
                 (click)="selectAvatar(avatar)"
-                class="border rounded-sm p-1 size-40 cursor-pointer"
+                class="border rounded-sm p-1 size-40 cursor-pointer bg-white"
                 [class.ring-2]="selectedAvatar === avatar"
                 [class.ring-blue-500]="selectedAvatar === avatar"
                 >
@@ -24,6 +19,6 @@
                 </div>
             </div>
         </div>
-        <button type="submit" mat-flat-button color="primary" [disabled]="form.invalid">Change</button>
+        <button type="submit" mat-flat-button [disabled]="form.invalid">Change</button>
     </form>
-</div>
+</app-background>
