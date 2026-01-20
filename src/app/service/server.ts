@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import { User } from './user';
 import { Router } from '@angular/router';
 import { Player } from '../pages/impostor/impostor';
+import { environment } from '../../environments/environment';
 
 export type Room = {
   id: string;
@@ -18,7 +19,7 @@ export type Room = {
   providedIn: 'root',
 })
 export class Server {
-  server = io("localhost:3000", {autoConnect: false});
+  server = io(environment.SERVER_URL, {autoConnect: false});
   userService = inject(User);
   router = inject(Router);
   roomUpdate = signal<Room>({
